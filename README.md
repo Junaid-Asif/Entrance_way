@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Unified Security Platform
 
-## Getting Started
+This platform manages two distinct modules:
+1. **Identity & Access Card System**: QR-based security cards dynamically mapped to UUIDs preventing forgery.
+2. **Visitor Management**: Detailed entry/exit logging with live tracking and an automatic cron check API to catch overstaying visitors.
 
-First, run the development server:
+## Tech Stack
+- **Next.js 15 (App Router)**
+- **Tailwind CSS 4.0 & Shadcn UI** for a pristine, intermediate blue professional theme.
+- **Prisma ORM** mapping directly to your provided Railway PostgreSQL database.
+- **Supabase** acting as a headless backend API mock map interface.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## How to Initialize
+
+1. Connects to the Railway Database. Ensure `.env.local` contains:
+```env
+DATABASE_URL="postgresql://postgres:SimDqEyRmjnDULTvjgBnKCmrYhXEYeGv@interchange.proxy.rlwy.net:25571/railway"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Push the schema to Railway Postgres Database:
+```sh
+npx prisma db push
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Generate the Prisma Client locally:
+```sh
+npx prisma generate
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Start the Application:
+```sh
+npm run dev
+```
 
-## Learn More
+## Workflows Included
+- **Landing Page**: http://localhost:3000/
+- **Card Registration**: http://localhost:3000/register
+- **Hardware Sensor (Scanner)**: http://localhost:3000/scan 
+  - (Will use webcam if allowed, simulating the hardware scanner terminal unlocking when a valid QR UUID matches a DB record constraint)
+- **Admin Dashboard**: http://localhost:3000/admin
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Cron Triggers
+To check for overstaying visitors, standardly trigger:
+- `GET http://localhost:3000/api/cron/notify` 
+- We recommend mapping this URL using an external webhook periodically or configuring it within Supabase Edge functions schedule triggers.
