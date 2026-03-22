@@ -5,41 +5,67 @@ This platform manages two distinct modules:
 2. **Visitor Management**: Detailed entry/exit logging with live tracking and an automatic cron check API to catch overstaying visitors.
 
 ## Tech Stack
-- **Next.js 15 (App Router)**
+- **Next.js 16 (App Router)**
 - **Tailwind CSS 4.0 & Shadcn UI** for a pristine, intermediate blue professional theme.
-- **Prisma ORM** mapping directly to your provided Railway PostgreSQL database.
-- **Supabase** acting as a headless backend API mock map interface.
+- **Drizzle ORM** with PostgreSQL (hosted on Railway).
+- **Supabase** for authentication and backend services.
 
-## How to Initialize
+## Getting Started
 
-1. Connects to the Railway Database. Ensure `.env.local` contains:
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v18+)
+- A PostgreSQL database (e.g., Railway, Supabase, or local)
+
+### 1. Install Dependencies
+```sh
+npm install
+```
+
+### 2. Configure Environment Variables
+
+Create a `.env` file (or `.env.local`) in the project root and add the following:
+
 ```env
-DATABASE_URL="postgresql://postgres:SimDqEyRmjnDULTvjgBnKCmrYhXEYeGv@interchange.proxy.rlwy.net:25571/railway"
+DATABASE_URL="your-database-connection-string-here"
+NEXT_PUBLIC_SUPABASE_URL="your-supabase-url-here"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key-here"
 ```
 
-2. Push the schema to Railway Postgres Database:
+> ⚠️ **Never commit your `.env` file.** Make sure it is listed in `.gitignore`.
+
+### 3. Push the Schema to the Database
 ```sh
-npx prisma db push
+npx drizzle-kit push
 ```
 
-3. Generate the Prisma Client locally:
-```sh
-npx prisma generate
-```
-
-4. Start the Application:
+### 4. Start the Application
 ```sh
 npm run dev
 ```
 
-## Workflows Included
-- **Landing Page**: http://localhost:3000/
-- **Card Registration**: http://localhost:3000/register
-- **Hardware Sensor (Scanner)**: http://localhost:3000/scan 
-  - (Will use webcam if allowed, simulating the hardware scanner terminal unlocking when a valid QR UUID matches a DB record constraint)
-- **Admin Dashboard**: http://localhost:3000/admin
+The app will be available at `http://localhost:3000`.
+
+## Pages & Workflows
+| Route | Description |
+|---|---|
+| `/` | Landing Page |
+| `/register` | Card Registration |
+| `/scan` | Hardware Sensor (Scanner) — uses webcam to simulate a hardware scanner terminal, unlocking when a valid QR UUID matches a DB record |
+| `/admin` | Admin Dashboard |
 
 ## Cron Triggers
-To check for overstaying visitors, standardly trigger:
-- `GET http://localhost:3000/api/cron/notify` 
-- We recommend mapping this URL using an external webhook periodically or configuring it within Supabase Edge functions schedule triggers.
+To check for overstaying visitors, periodically trigger:
+```
+GET /api/cron/notify
+```
+We recommend mapping this URL using an external webhook scheduler or configuring it within Supabase Edge Functions schedule triggers.
+
+## Contributing
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/my-feature`)
+3. Commit your changes (`git commit -m 'Add my feature'`)
+4. Push to the branch (`git push origin feature/my-feature`)
+5. Open a Pull Request
+
+## License
+This project is private.
