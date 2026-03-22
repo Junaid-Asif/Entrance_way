@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Outfit } from 'next/font/google';
 import './globals.css';
+import { ThemeProvider } from '@/components/ThemeProvider';
+import { Navbar } from '@/components/Navbar';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const outfit = Outfit({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: 'Security Interchange Platform',
@@ -15,9 +17,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} font-sans min-h-screen bg-slate-50 antialiased`}>
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${outfit.variable} font-sans min-h-screen antialiased transition-colors duration-300`}>
+        <ThemeProvider>
+          <Navbar />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
